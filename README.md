@@ -14,11 +14,12 @@ Change password and locale etc using
 sudo raspi-config
 ```
 
-then follow the instructions on https://www.raspberrypi.org/documentation/configuration/wireless/access-point.md to set up an access point.
+then follow the instructions on https://github.com/Stu-emhTrade/sailmate/wiki/Set-up-wireless-access-point to set up an access point.
 
 when plugged into a power supply, the pi should now have an access point, currently called
 `PiWiFi`
 
+# For Development
 To ssh into the pi, connect to this wifi network and use
 
 ```
