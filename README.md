@@ -22,4 +22,8 @@ Follow instructions here to get the pi on the NMEA 2000 network:
 https://github.com/Stu-emhTrade/sailmate/wiki/Setup-CAN-board
 (Note this assumes one of these boards is connected to the pi https://copperhilltech.com/pican-2-can-bus-interface-for-raspberry-pi/)
 
+after doing above, the canbus should be connected on boot on
+`can0`
+
+
 
