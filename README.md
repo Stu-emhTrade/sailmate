@@ -27,6 +27,7 @@ after doing above, the canbus should be connected on boot on
 
 ## node.js application
 
-To log and dish up the data from the canbus, we'll use a node.js app called app.js. We want this to run on startup, so we've followed the instructions here to create a service called `canLogService`
+To log and dish up the data from the canbus, we'll use a node.js app called app.js. We want this to run on startup, so we've followed the instructions here:
+https://github.com/Stu-emhTrade/sailmate/wiki/Setup-node.js-application-service to create a service called `canLogService`
 
 
