@@ -16,6 +16,13 @@ To ssh into the pi, connect to this wifi network and use
 ssh pi@192.168.4.1
 ```
 
+If you set up Atom to access remote files on the pi go to packages > remote_atom > start server
+then ssh using
+```
+ssh -R 52698:localhost:52698 pi@192.168.4.1
+```
+which will forward a port through. Then on the pi run `ratom <path to file>` and the file will appear in Atom where it can be edited and saved.
+
 ## CANBUS
 
 Follow instructions here to get the pi on the NMEA 2000 network:
