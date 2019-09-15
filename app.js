@@ -5,11 +5,14 @@ var channel = can.createRawChannel("can0", true);
 var logger = fs.createWriteStream('./log.txt', {
   flags: 'a' // 'a' means appending (old data will be preserved)
 })
-
+var message = {};
 // Log any message
 channel.addListener("onMessage", (msg) => { 
-  logger.write(msg + '/n'); } );
-  
-  channel.addListener("onMessage", (msg) => { 
-    logger.write(msg + '/n'); } );
+  logger.write(JSON.stringify(msg) + '\n');
+//  console.log(JSON.stringify(msg));
+  }
+ );
+
+channel.start();
+
 
