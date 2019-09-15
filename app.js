@@ -9,4 +9,7 @@ var logger = fs.createWriteStream('./log.txt', {
 // Log any message
 channel.addListener("onMessage", (msg) => { 
   logger.write(msg + '/n'); } );
+  
+  channel.addListener("onMessage", (msg) => { 
+    logger.write(msg + '/n'); } );
 
