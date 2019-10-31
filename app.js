@@ -2,7 +2,7 @@ var fs = require('fs')
 var can = require('socketcan');
 
 var channel = can.createRawChannel("can0", true);
-var logger = fs.createWriteStream('./log.ndjson', {
+var logger = fs.createWriteStream('./rawLog.ndjson', {
   flags: 'a' // 'a' means appending (old data will be preserved)
 })
 var message = {};
