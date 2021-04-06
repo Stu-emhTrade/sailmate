@@ -6,6 +6,7 @@
   "dependencies": {
     "@canboat/canboatjs": "^1.6.10",
     "buffer": "^5.4.2",
+    "ndjson": "^1.5.0",
     "socketcan": "^2.4.0"
   },
   "devDependencies": {},
