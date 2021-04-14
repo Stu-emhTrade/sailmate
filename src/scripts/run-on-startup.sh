@@ -1,3 +1,4 @@
 #!/bin/bash
 source ~/github/sailmate/src/venv/bin/activate
-python "$@"
+cd ~/github/sailmate/src/
+python main.py
