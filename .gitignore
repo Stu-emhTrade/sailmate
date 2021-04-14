@@ -1,5 +1,4 @@
 node_modules/
 */venv
 parsing_and_analytics/*
-*log.ndjson
-*Log.ndjson
+*.ndjson
