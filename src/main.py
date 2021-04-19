@@ -14,6 +14,13 @@ def format_msg(can_msg):
            "data": list(can_msg.data)}
     return json.dumps(tmp)
 
+def null_msg():
+    tmp = {"timestamp": datetime.now().timestamp(),
+           "sender_id": None,
+           "dlc": None,
+           "data": None}
+    return json.dumps(tmp)
+
 ## setup file dump
 today = datetime.now().strftime('%Y%m%d')
 files = os.listdir('./logData/')
@@ -30,12 +37,15 @@ listener = can.BufferedReader()
 
 with open('./logData/' + filename, 'a') as logfile:
     while True:
-        msg = bus.recv(timeout=None)
+        msg = bus.recv(timeout=1)
         listener.on_message_received(msg=msg)
         bob = listener.get_message(timeout=0.1)
         if bob:
-           logfile.writelines(format_msg(bob) + '\n')
-           logfile.flush()
+            logfile.writelines(format_msg(bob) + '\n')
+            logfile.flush()
+        else:
+            logfile.writelines(null_msg() + '\n')
+            logfile.flush()
 
 
 
