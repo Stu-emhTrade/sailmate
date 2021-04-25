@@ -2,3 +2,4 @@ node_modules/
 */venv
 parsing_and_analytics/*
 *.ndjson
+.private/*
