@@ -1,5 +1,5 @@
 node_modules/
-*/venv/*
+*venv/*
 */prototype_experiments/data_files/*
 *.ndjson
 .private/*
