@@ -22,6 +22,10 @@ The script is currently:
 ```
 scripts/run_dev_interpreter.sh
 ```
+you may need to run
+```
+chmod +x scripts/run_dev_interpreter.sh
+```
 
 ## CANBUS
 
