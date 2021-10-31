@@ -15,6 +15,14 @@ To ssh into the pi, connect to this wifi network and use
 ```
 ssh pi@192.168.4.1
 ```
+clone the repo then run
+```
+python3 -m venv venv
+
+source venv/bin/activate
+
+python3 -m pip install -r requirements.txt
+```
 
 In pycharm, you can set up a remote interpreter so using the pi to develop on (but with the local file structure). To do this using a venv, follow these instructions. https://intellij-support.jetbrains.com/hc/en-us/community/posts/115000120270-Using-a-virtual-environment-on-a-remote-machine
 
