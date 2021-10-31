@@ -37,6 +37,14 @@ https://github.com/Stu-emhTrade/sailmate/wiki/Setup-CAN-board
 after doing above, the canbus should be connected on boot on
 `can0`
 
+## Currently we're using the canboat and signal K projects to parse data as it comes in
+
+You'll need this repo https://github.com/SignalK/n2k-signalk.
+
+```
+sudo npm install -g https://github.com/SignalK/n2k-signalk.git
+```
+
 ## node.js application
 
 To log and dish up the data from the canbus, we'll use a node.js app called app.js. We want this to run on startup, so we've followed the instructions here:
