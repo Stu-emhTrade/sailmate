@@ -20,11 +20,11 @@ In pycharm, you can set up a remote interpreter so using the pi to develop on (b
 
 The script is currently:
 ```
-scripts/run_dev_interpreter.sh
+scripts/remote_dev_interpreter.sh
 ```
 you may need to run
 ```
-chmod +x scripts/run_dev_interpreter.sh
+chmod +x scripts/remote_dev_interpreter.sh
 ```
 
 ## CANBUS
