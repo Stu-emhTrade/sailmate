@@ -34,3 +34,10 @@ with open('./logData/' + filename, 'a') as logfile:
         else:
             logfile.writelines(null_msg() + '\n')
             logfile.flush()
+
+
+## read from the can_bus
+
+## check if multi-line
+
+## parse to

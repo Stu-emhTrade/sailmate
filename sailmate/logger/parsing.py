@@ -1,11 +1,12 @@
-
 filepath = './logData/'
 filename = '20210423_0.ndjson'
 
-def add_filename(dat,fn):
+
+def add_filename(dat, fn):
     tmp = json.loads(dat)
     tmp['data_file'] = fn
     return json.dumps(tmp)
+
 
 with open(filepath + filename) as f:
     with open('./logData/testFile.ndjson', 'w') as outfile:
@@ -19,7 +20,8 @@ from datetime import datetime
 import json
 import subprocess
 
-def parseCanId(id):
+
+def parse_can_id(id):
     res = {'canId': id,
            'prio': ((id >> 26) & 0x7),
            'src': id & 0xff,
@@ -38,8 +40,9 @@ def parseCanId(id):
         res['pgn'] = (res['DP'] << 16) + (res['PF'] << 8) + res['PS']
     return res
 
-def convertTimeStamp(ts):
-    nzt = pytz.timezone('Pacific/Auckland') #TODO this needs attention for other locales.
+
+def convert_timestamp(ts):
+    nzt = pytz.timezone('Pacific/Auckland')  # TODO this needs attention for other locales.
     ts = datetime.fromtimestamp(ts)
     ts = nzt.localize(ts).astimezone(pytz.utc)
     return "%s:%06.3f%s" % (
@@ -47,34 +50,35 @@ def convertTimeStamp(ts):
         float("%06.3f" % (ts.second + ts.microsecond / 1e6)),
         'Z')
 
-def convertToActisense(r):
-    #timestamp,prio,pgn,src,dst,len,data
-    output = {}
-    output['timestamp'] = convertTimeStamp(r['timestamp'])
-    tmp = parseCanId(r['sender_id'])
 
-    return ",".join([convertTimeStamp(r['timestamp']),
-              str(tmp['prio']),
-              str(tmp['pgn']),
-              str(tmp['src']),
-              str(tmp['dst']),
-              str(r['dlc']),
-              ",".join([format(i, 'x').zfill(2) for i in r['data']])])
+def convert_to_actisense(r):
+    # timestamp,prio,pgn,src,dst,len,data
+    output = {}
+    output['timestamp'] = convert_timestamp(r['timestamp'])
+    tmp = parse_can_id(r['sender_id'])
+
+    return ",".join([convert_timestamp(r['timestamp']),
+                     str(tmp['prio']),
+                     str(tmp['pgn']),
+                     str(tmp['src']),
+                     str(tmp['dst']),
+                     str(r['dlc']),
+                     ",".join([format(i, 'x').zfill(2) for i in r['data']])])
+
 
 with open('./logData/testFile.ndjson') as infile:
     with open('./logData/actisenseTest.csv', 'w') as outfile:
         outfile.truncate(0)
         for i in infile:
-            line_to_write = convertToActisense(json.loads(infile.readline())) + '\n'
+            line_to_write = convert_to_actisense(json.loads(infile.readline())) + '\n'
             outfile.write(line_to_write)
 
+# todo pipe the testFile straight to the converter using naked.
 
-#todo pipe the testFile straight to the converter using naked.
-
-with open('./logData/canboatJSON_test.ndjson','w') as jsonFile: #todo deal with stderr so it doesn't clog memory
+with open('./logData/canboatJSON_test.ndjson', 'w') as jsonFile:  # todo deal with stderr so it doesn't clog memory
     process = subprocess.Popen('cat ./logData/actisenseTest.csv | analyzerjs',
-                           shell=True,
-                           stdout=subprocess.PIPE)
+                               shell=True,
+                               stdout=subprocess.PIPE)
     while True:
         output = process.stdout.readline().decode('utf-8')
         if output == '' and process.poll() is not None:
@@ -84,10 +88,9 @@ with open('./logData/canboatJSON_test.ndjson','w') as jsonFile: #todo deal with 
             jsonFile.flush()
         rc = process.poll()
 
-
 signalk_data = subprocess.run('cat ./logData/actisenseTest.csv | analyzerjs | n2k-signalk --flat',
-                     shell=True,
-                     stdout = subprocess.PIPE).stdout
+                              shell=True,
+                              stdout=subprocess.PIPE).stdout
 
-with open('./logData/signalk_test.ndjson','w') as jsonFile:
+with open('./logData/signalk_test.ndjson', 'w') as jsonFile:
     jsonFile.write(signalk_data.decode('utf-8'))
