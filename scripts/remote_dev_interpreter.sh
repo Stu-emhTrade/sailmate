@@ -1,4 +1,4 @@
 #!/bin/bash
-source ~/github/sailmate/venv/bin/activate
-cd ~/github/sailmate
+source /home/pi/github/sailmate/venv/bin/activate
+cd /home/pi/github/sailmate
 python "$@"
