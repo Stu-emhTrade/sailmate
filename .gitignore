@@ -1,5 +1,14 @@
-node_modules/
-*venv/*
+##Big log Data
 */prototype_experiments/data_files/*
 *.ndjson
+
+##Python and Interpreter
+*venv/*
+*node_modules/
+
+##Dev Env
+*/.DS_Store*
+*.idea/
+##secrets
 .private/*
+
