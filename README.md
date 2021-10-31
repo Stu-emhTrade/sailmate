@@ -16,16 +16,11 @@ To ssh into the pi, connect to this wifi network and use
 ssh pi@192.168.4.1
 ```
 
-If you set up Atom to access remote files on the pi go to packages > remote_atom > start server
-then ssh using
-```
-ssh -R 52698:localhost:52698 pi@192.168.4.1
-```
-which will forward a port through. Then on the pi run `ratom <path to file>` and the file will appear in Atom where it can be edited and saved.
+In pycharm, you can set up a remote interpreter so using the pi to develop on (but with the local file structure). To do this using a venv, follow these instructions. https://intellij-support.jetbrains.com/hc/en-us/community/posts/115000120270-Using-a-virtual-environment-on-a-remote-machine
 
-To copy files from the pi to local machine run
+The script is currently:
 ```
-scp pi@192.168.4.1:path/to/file/on/pi /path/to/destination/file
+scripts/run_dev_interpreter.sh
 ```
 
 ## CANBUS
