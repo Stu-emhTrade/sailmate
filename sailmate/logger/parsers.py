@@ -74,14 +74,3 @@ def make_actisense_from_test_dat():
                 outfile.write(line_to_write)
 
 
-### read the can bus
-    # each line, convert to actisense
-    # stream to analyserjs
-
-    ### read to the signalk stream
-    ## convert to PgnRecord
-        # if a record add to counter, send insert statement
-        # if not next
-        # if counter = 100, commit transaction
-
-    ### every 10 seconds or so, check the db to see if the logging period is ended.

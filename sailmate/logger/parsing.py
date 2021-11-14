@@ -20,6 +20,13 @@ from datetime import datetime
 import json
 import subprocess
 
+def format_msg(can_msg):
+    tmp = {"timestamp": can_msg.timestamp,
+           "sender_id": can_msg.arbitration_id,
+           "dlc": can_msg.dlc,
+           "data": list(can_msg.data)}
+    return json.dumps(tmp)
+
 
 def parse_can_id(id):
     res = {'canId': id,
