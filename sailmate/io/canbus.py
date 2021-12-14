@@ -1,46 +1,97 @@
-import can
-from can.interface import Bus
 import sys
-import json
-from ..db.functions import get_logging_flag, insert_telemetry_records
+import can
+import pytz
+import argparse
+from datetime import datetime
+from dataclasses import dataclass
+
 
 can.rc['interface'] = 'socketcan'
 can.rc['channel'] = 'can0'
 can.rc['bitrate'] = 250000
 
 
-
-def start_canbus():
-    bus = Bus()
-    listener = can.BufferedReader()
-    while True:
-        msg = bus.recv(timeout=1)
-        listener.on_message_received(msg=msg)
-        tmp_msg = listener.get_message(timeout=0.1)
-        if tmp_msg:
-            sys.stdout.write(tmp_msg)
+from can.interface import Bus
 
 
-def log_nmea_data(conn: sqlite3.Connection):
-    while get_logging_flag(conn):
-        counter = 0
+@dataclass
+class NmeaMessage:
+    timestamp: float
+    arbitration_id: int
+    dlc: int
+    data: bytearray
 
-        ### read the can bus
-        # each line,convert to actisense:
-        #   convert_to_actisense(format_msg(l))
-        # stream to analyserjs
+    def convert_timestamp(self) -> str:
+        ts = self.timestamp
+        nzt = pytz.timezone('Pacific/Auckland')  # TODO this needs attention for other locales.
+        ts = datetime.fromtimestamp(ts)
+        ts = nzt.localize(ts).astimezone(pytz.utc)
+        return "%s:%06.3f%s" % (
+            ts.strftime('%Y-%m-%dT%H:%M'),
+            float("%06.3f" % (ts.second + ts.microsecond / 1e6)),
+            'Z')
 
-        ### read to the signalk stream
-        ## convert to PgnRecord
-        # if a record add to counter, send insert statement
-        # if not next
-        # if counter = 100, commit transaction
+    def parse_can_id(self) -> {int}:
+        id = self.arbitration_id
+        res = {'canId': id,
+               'prio': ((id >> 26) & 0x7),
+               'src': id & 0xff,
+               'PF': (id >> 16) & 0xff,
+               'PS': (id >> 8) & 0xff,
+               'DP': (id >> 24) & 1,
+               'EDP': (id >> 25) & 1}
 
-        ### every 10 seconds or so, check the db to see if the logging period is ended.
+        if res['PF'] < 240:
+            # PDU1 format, the PS contains the destination address
+            res['dst'] = res['PS']
+            res['pgn'] = (res['DP'] << 16) + (res['PF'] << 8)
+        else:
+            # PDU2 format, the destination is implied global and the PGN is extended
+            res['dst'] = 0xff
+            res['pgn'] = (res['DP'] << 16) + (res['PF'] << 8) + res['PS']
+        return res
+
+    def convert_to_actisense(self) -> str:
+        # timestamp,prio,pgn,src,dst,len,data
+        tmp = self.parse_can_id()
+
+        return ",".join([self.convert_timestamp(),
+                         str(tmp['prio']),
+                         str(tmp['pgn']),
+                         str(tmp['src']),
+                         str(tmp['dst']),
+                         str(self.dlc),
+                         ",".join([format(i, 'x').zfill(2) for i in self.data])])
 
 
-## read from the can_bus
+def read_canbus(filename=None):
+    if not filename:
+        bus = Bus()
+        listener = can.BufferedReader()
+        while True:
+            msg = bus.recv(timeout=1)
+            listener.on_message_received(msg=msg)
+            tmp_msg = listener.get_message(timeout=0.1)
+            if tmp_msg:
+                nmea_msg = NmeaMessage(tmp_msg.timestamp,
+                                       tmp_msg.arbitration_id,
+                                       tmp_msg.dlc,
+                                       tmp_msg.data)
+                sys.stdout.write(nmea_msg.convert_to_actisense())
 
-## check if multi-line
+    else:
+        with open(filename) as test_file:
+            for line in test_file:
+                sys.stdout.write(line)
 
-## parse to
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--filename', action='store', default=None)
+    args = parser.parse_args()
+
+    read_canbus(args.filename)
+
+
+
+
