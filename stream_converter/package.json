@@ -1,13 +1,15 @@
 {
-  "name": "sailmate",
+  "name": "stream_converter",
   "version": "1.0.0",
-  "description": "NMEA 2000 data logger and webserver",
+  "description": "converts actisense to signalk",
   "main": "index.js",
   "dependencies": {
     "@canboat/canboatjs": "^1.6.10",
-    "buffer": "^5.4.2",
-    "ndjson": "^1.5.0",
-    "socketcan": "^2.4.0"
+    "@signalk/n2k-signalk": "^2.3.0",
+    "@signalk/signalk-schema": "^1.6.0"
+  },
+  "bin": {
+    "actisense-signalk": "./actisense-signalk.js"
   },
   "devDependencies": {},
   "scripts": {
