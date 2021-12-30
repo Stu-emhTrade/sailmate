@@ -16,6 +16,12 @@ class TelemetryRecord:
     variable_name: str
     value: [int, float, str]
 
+    def as_tuple(self) -> ():
+        return (self.timestamp,
+                self.pgn,
+                self.variable_name,
+                self.value)
+
 @dataclass
 class PgnRecord:
     pgn: int
@@ -25,7 +31,10 @@ class PgnRecord:
     def unpack(self) -> []:
         output_list = []
         for i in self.record:
-            output_list.append(TelemetryRecord(self.timestamp, self.pgn, i.variable_name, i.value))
+            output_list.append(TelemetryRecord(self.timestamp,
+                                               self.pgn,
+                                               i.variable_name,
+                                               i.value))
         return output_list
 
 

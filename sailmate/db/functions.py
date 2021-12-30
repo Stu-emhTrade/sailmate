@@ -1,5 +1,5 @@
 import sqlite3
-from ..logger.pgn import TelemetryRecord
+from ..logger.pgn import PgnRecord
 
 
 def set_logging_flag(conn: sqlite3.Connection, value: [int, bool]) -> bool:
@@ -28,8 +28,18 @@ def get_logging_flag(conn: sqlite3.Connection) -> bool:
 
     return bool(tmp[0][0])
 
-def insert_telemetry_records(conn: sqlite3.Connection, pgn_record: [TelemetryRecord]):
+
+def insert_pgns(conn: sqlite3.Connection, pgn_records: [PgnRecord]):
     c = conn.cursor()
-    sql = """INSERT INTO telemetry 
-             VALUES (?, ?, ?, ?)"""
-    c.executemany(sql, pgn_record)
+
+    for p in pgn_records:
+        telemetry_records = p.unpack()
+        telemetry_tuples = [x.as_tuple() for x in telemetry_records]
+
+        print(telemetry_records)
+        sql = """INSERT INTO telemetry 
+                 (timestamp, pgn, variable_name, value)
+                 VALUES (?, ?, ?, ?)"""
+        c.executemany(sql, telemetry_tuples)
+
+    conn.commit()
