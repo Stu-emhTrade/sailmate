@@ -15,6 +15,9 @@ def create_app(
 
     app = Flask(__name__)
 
+    app_db_conn = sqlite3.Connection(app_db, check_same_thread=False)
+    log_db_conn = sqlite3.Connection(log_db, check_same_thread=False)
+
     @app.route("/")
     def index():
         return "Hello World!"
@@ -23,17 +26,17 @@ def create_app(
     def start_log():
         print('starting to log')
 
-        app_db_conn = sqlite3.Connection(app_db)
         logging_flag = set_logging_flag(app_db_conn, True)
-        app_db_conn.close()
 
         if test_can_file is None:
             log_thread = threading.Thread(target=log_data,
-                                          args=[log_db_conn])
+                                          args=[app_db_conn,
+                                                log_db_conn])
 
         else:
             log_thread = threading.Thread(target=log_data,
-                                          args=[log_db_conn],
+                                          args=[app_db_conn,
+                                                log_db_conn],
                                           kwargs={'filename': test_can_file})
         log_thread.start()
 

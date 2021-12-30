@@ -21,7 +21,7 @@ def setup_log_db(log_data_path: str) -> str:
     #TODO: some stuff here to initialise the data tables
     c = conn.cursor()
 
-    create_query = ('CREATE TABLE IF NOT EXISTS telemetry '
+    create_script = ('CREATE TABLE IF NOT EXISTS telemetry '
                     '(id INTEGER PRIMARY KEY AUTOINCREMENT,'
                     'timestamp TEXT,'
                     'pgn INTEGER,'
@@ -30,11 +30,11 @@ def setup_log_db(log_data_path: str) -> str:
                     'CREATE INDEX idx_telemetry_timestamp '
                     'ON telemetry (timestamp); '
                     'CREATE INDEX idx_telemetry_variable '
-                    'ON telemetry (variable); '
+                    'ON telemetry (variable_name); '
                     'CREATE INDEX idx_telemetry_pgn '
                     'ON telemetry (pgn);')
 
-    c.execute(create_query)
+    c.executescript(create_script)
 
     conn.commit()
     # todo put this file in the app db? could include date, filename, uploaded

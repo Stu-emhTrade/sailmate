@@ -1,16 +1,24 @@
 ##Big log Data
 */prototype_experiments/data_files/*
 *.ndjson
+*.db
+
+##Node
+*node_modules/
+*/package-lock.json
 
 ##Python and Interpreter
 *venv/*
-*node_modules/
+__pycache__
+*/__pycache__
+**/__pycache__
 
 ##Dev Env
 */.DS_Store
 **/.DS_Store
 .DS_Store
 *.idea/
+
 ##secrets
 .private/*
 

@@ -5,12 +5,17 @@ from ..logger.pgn_model import pgn_model
 from ..db.functions import get_logging_flag
 
 
-def log_data(conn, filename=None):
-    canbus_args = ['python3', './sailmate/io/canbus.py']
+def log_data(
+        app_db_conn,
+        log_db_conn,
+        filename=None):
+
+    canbus_cmd_args = ['python3', './sailmate/io/canbus.py']
+
     if filename:
-        canbus_args.append(f'--filename={filename}')
+        canbus_cmd_args.append(f'--filename={filename}')
     ## start the canbus
-    canbus_process = Popen(canbus_args,
+    canbus_process = Popen(canbus_cmd_args,
                            stdout=PIPE)
 
     ## pipe to a subprocess that prints it to it's std out (this will be nodejs)
@@ -41,7 +46,7 @@ def log_data(conn, filename=None):
                 print(e)
                 continue
 
-        keep_logging = get_logging_flag(conn)
+        keep_logging = get_logging_flag(app_db_conn)
 
     ## kill subprocesses
     canbus_process.kill()
