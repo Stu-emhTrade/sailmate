@@ -29,43 +29,12 @@ class PgnRecord:
         return output_list
 
 
-pgn_model = {
-    13036: {
-        "paths": [
-            "environment.wind.speedApparent",
-            "environment.wind.angleApparent"
-        ]
-    },
-    128259: {
-        "paths": [
-            "navigation.speedThroughWater"  # "navigation.speedThroughWaterReferenceType"
-        ]
-    },
-    127250: {
-        "paths": [
-            "navigation.headingMagnetic"
-        ]
-    },
-    127245: {
-        "paths": [
-            "steering.rudderAngle"
-        ]
-    }
-}
-
-
-# todo add others that are in config.json, also work out whether any of the stuff coming down the pipe is useful
-# eg
-# 65341
-# 127237
-
-
-def pgn_handler(sig_k_row, pgn_model) -> [PgnRecord, None]:
-    obj_to_load = json.loads(sig_k_row)
+def pgn_handler(sig_k_row: dict, pgn_model: dict) -> [PgnRecord, None]:
+    obj_to_load = sig_k_row
     pgn_records = []
     for u in obj_to_load['updates']:  # usually just one i think
         pgn = u['source']['pgn']
-        if pgn not in pgn_model.keys():
+        if pgn not in pgn_model.keys() or len(u['values']) == 0:
             continue
 
         ts = parser.parse(u['timestamp'])

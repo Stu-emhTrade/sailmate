@@ -8,21 +8,20 @@ from logger.app import create_app
 LOG_DATA_PATH = './sailmate/data/logData/'
 APP_DB_FILE = './sailmate/data/app_data.db'
 
-def main():
+def main(test_log_file = None):
     ## setup app db
     if not setup_app_db(APP_DB_FILE):
         raise ValueError("app db not setup")
 
-    ## initialise an sqllite file for data
-    log_db = setup_log_db(LOG_DATA_PATH)
+    # initialise an sqllite file for data
+    log_db_path = setup_log_db(LOG_DATA_PATH)
 
-
-    app = create_app(APP_DB_FILE, log_db)
-    ## run flask app
+    # run flask app
+    app = create_app(APP_DB_FILE, log_db_path, test_can_file)
     app.run(host="0.0.0.0")
 
 
 if __name__ == "__main__":
     main()
+    #todo parse sys args
 
-# ## setup file dump

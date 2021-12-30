@@ -1,28 +1,53 @@
-from subprocess import Popen, PIPE
-
-## start the canbus
-canbus_process = Popen(['python3', './sailmate/io/canbus.py', '--filename=./sailmate/data/logData/actisenseTest.csv'],
-                       stdout=PIPE)
-
-## pipe to a subprocess that prints it to it's std out (this will be nodejs)
-signalk_process = Popen(['analyzerjs', '|', 'n2k-signalk', '--flat'],
-                        stdin=canbus_process.stdout,
-                        stdout=PIPE)
-
-with signalk_process.stdout as sigK:
-    for i in sigK:
-        print(i)
+from subprocess import Popen, PIPE, STDOUT
+import json
+from ..logger.pgn import pgn_handler
+from ..logger.pgn_model import pgn_model
+from ..db.functions import get_logging_flag
 
 
-while True: #check db for stop flag
-    ## read signal k
-    bob = signalk_process.stdout.readline().decode()
-    ## publish to db
-    print(bob)
+def log_data(conn, filename=None):
+    canbus_args = ['python3', './sailmate/io/canbus.py']
+    if filename:
+        canbus_args.append(f'--filename={filename}')
+    ## start the canbus
+    canbus_process = Popen(canbus_args,
+                           stdout=PIPE)
 
-## kill subprocesses
+    ## pipe to a subprocess that prints it to it's std out (this will be nodejs)
+    signalk_process = Popen(['actisense-signalk'],
+                            stdin=canbus_process.stdout,
+                            stdout=PIPE,
+                            stderr=STDOUT)
+
+    ## todo ^^ maybe instead of piping from one to other, could check if we want to keep the pgn or not first.
+
+    keep_logging = True
+
+    while keep_logging:
+
+        for i in range(100):
+            ## read signal k
+            tmp_line = signalk_process.stdout.readline().decode()
+            try:
+                tmp_line = json.loads(tmp_line)
+                pgns = pgn_handler(tmp_line, pgn_model)  # this is a list, could be length 0
+
+                # for pgns db insert
+                print(i)
+                for p in pgns:
+                    print(p)
+            except json.decoder.JSONDecodeError as e:
+                print(i)
+                print(e)
+                continue
+
+        keep_logging = get_logging_flag(conn)
+
+    ## kill subprocesses
+    canbus_process.kill()
+    signalk_process.kill()
 
 
-signalk_data = subprocess.run('analyserjs | n2k-signalk --flat',
-                              stdout=subprocess.PIPE).stdout
-
+if __name__ == '__main__':
+    log_data(conn='../data/logData/testdb.db',
+             filename='../data/logData/actisenseTest.csv')
