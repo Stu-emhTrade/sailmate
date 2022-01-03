@@ -26,9 +26,9 @@ ssh pi@192.168.4.1
 ```
 clone the repo then run the following inside the repo folder
 ```
-python3 -m venv venv
+python3 -m venv .venv
 
-source venv/bin/activate
+source .venv/bin/activate
 
 python3 -m pip install -r requirements.txt
 ```
