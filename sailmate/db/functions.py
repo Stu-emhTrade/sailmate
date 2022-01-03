@@ -36,10 +36,10 @@ def insert_pgns(conn: sqlite3.Connection, pgn_records: [PgnRecord]):
         telemetry_records = p.unpack()
         telemetry_tuples = [x.as_tuple() for x in telemetry_records]
 
-        print(telemetry_records)
         sql = """INSERT INTO telemetry 
                  (timestamp, pgn, variable_name, value)
                  VALUES (?, ?, ?, ?)"""
         c.executemany(sql, telemetry_tuples)
+        print(telemetry_records)
 
     conn.commit()
