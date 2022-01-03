@@ -1,4 +1,25 @@
-node_modules/
-*/venv
-parsing_and_analytics/*
+##Big log Data
+*/archive_data/logData/voyages/*
+*/prototype_experiments/data_files/*
 *.ndjson
+*.db
+
+##Node
+*node_modules/
+*/package-lock.json
+
+##Python and Interpreter
+*venv/*
+__pycache__
+*/__pycache__
+**/__pycache__
+
+##Dev Env
+*/.DS_Store
+**/.DS_Store
+.DS_Store
+*.idea/
+
+##secrets
+.private/*
+

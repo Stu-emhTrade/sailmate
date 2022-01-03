@@ -1,0 +1,32 @@
+{
+  "name": "stream_converter",
+  "version": "1.0.0",
+  "description": "converts actisense to signalk",
+  "main": "index.js",
+  "dependencies": {
+    "@canboat/canboatjs": "^1.6.10",
+    "@signalk/n2k-signalk": "^2.3.0",
+    "@signalk/signalk-schema": "^1.6.0"
+  },
+  "bin": {
+    "actisense-signalk": "./actisense-signalk.js"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Stu-emhTrade/sailmate.git"
+  },
+  "keywords": [
+    "NMEA2000",
+    "CANBUS"
+  ],
+  "author": "Stuart Innes",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Stu-emhTrade/sailmate/issues"
+  },
+  "homepage": "https://github.com/Stu-emhTrade/sailmate#readme"
+}
