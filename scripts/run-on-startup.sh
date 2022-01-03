@@ -1,4 +1,4 @@
 #!/bin/bash
 cd /home/pi/github/sailmate
 source .venv/bin/activate
-python3 -m sailmate.sailmate --filename=./sailmate/data/logData/test/actisenseTest.csv &
+python3 -m sailmate.sailmate &
