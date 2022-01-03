@@ -15,7 +15,7 @@ def main(test_can_file = None):
 
     # run flask app
     app = create_app(APP_DB_FILE, log_db_path, test_can_file)
-    app.run(host="0.0.0.0")
+    app.run(host="localhost", port=5000)
 
 
 if __name__ == "__main__":

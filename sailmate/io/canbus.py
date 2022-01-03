@@ -70,7 +70,8 @@ class NmeaMessage:
 
 
 def read_canbus(filename=None):
-    if not filename:
+
+    if filename is None:
         bus = Bus()
         listener = can.BufferedReader()
         while True:
