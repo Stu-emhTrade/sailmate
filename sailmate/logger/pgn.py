@@ -9,6 +9,7 @@ class DataPoint:
     variable_name: str
     value: [int, float, str]
 
+
 @dataclass
 class TelemetryRecord:
     timestamp: datetime
@@ -21,6 +22,7 @@ class TelemetryRecord:
                 self.pgn,
                 self.variable_name,
                 self.value)
+
 
 @dataclass
 class PgnRecord:
@@ -38,11 +40,20 @@ class PgnRecord:
         return output_list
 
 
+def split_multi_value(value: dict) -> [DataPoint]:
+    tmp_values = []
+    for v in value.keys():
+        tmp_values.append(DataPoint(variable_name=v,
+                                    value=value[v]))
+    return tmp_values
+
+
 def pgn_handler(sig_k_row: dict, pgn_model: dict) -> [PgnRecord, None]:
     obj_to_load = sig_k_row
     pgn_records = []
     for u in obj_to_load['updates']:  # usually just one i think
         pgn = u['source']['pgn']
+
         if pgn not in pgn_model.keys() or len(u['values']) == 0:
             continue
 
@@ -54,8 +65,17 @@ def pgn_handler(sig_k_row: dict, pgn_model: dict) -> [PgnRecord, None]:
         data_records = []
         for p in paths_to_store:
             path_name = p.split(".")[-1]
-            data_records.append(DataPoint(variable_name=path_name,
-                                          value=path_x_value[p]))
+            try:
+                value = path_x_value[p]
+            except KeyError as e:
+                continue
+
+            if type(value) is dict:
+                data_records.extend(split_multi_value(value))
+
+            else:
+                data_records.append(DataPoint(variable_name=path_name,
+                                              value=value))
 
         pgn_records.append(PgnRecord(pgn, ts, data_records))
 
