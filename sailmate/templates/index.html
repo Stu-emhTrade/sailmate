@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>MAIN PAGE</title>
+</head>
+<body>
+    <div>
+        {% if logging_flag == True: %}
+            <p1> LOGGING </p1>
+            <form action = "{{ url_for('stop_log') }}" method = "GET">
+                <p><input type = "submit" value = "STOP LOGGING" /></p>
+            </form>
+        {% else %}
+            <p1> LOGGING PAUSED </p1>
+            <form action = "{{ url_for('start_log') }}" method = "GET">
+                <p><input type = "submit" value = "START LOGGING" /></p>
+            </form>
+        {% endif %}
+    </div>
+    <div>
+        <form action = "{{ url_for('sail_change') }}" method = "GET">
+            <p><input type = "submit" value = "SAIL CHANGE" /></p>
+        </form>
+    </div>
+</body>
+</html>

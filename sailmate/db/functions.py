@@ -1,5 +1,8 @@
 import sqlite3
+import json
 from ..logger.pgn import PgnRecord
+from datetime import datetime
+
 
 
 def set_logging_flag(conn: sqlite3.Connection, value: [int, bool]) -> bool:
@@ -43,3 +46,60 @@ def insert_pgns(conn: sqlite3.Connection, pgn_records: [PgnRecord]):
         print(telemetry_records)
 
     conn.commit()
+
+
+def get_current_sail_config(conn: sqlite3.Connection) -> dict:
+    c = conn.cursor()
+
+    sql = """SELECT value
+            FROM telemetry
+            where variable_name = 'sailConfig'
+            AND timestamp = (
+                    SELECT timestamp
+                    FROM telemetry
+                    WHERE variable_name = 'sailConfig'
+                    order by timestamp desc
+                    limit 1)"""
+    tmp = c.execute(sql).fetchone()
+    if tmp is None:
+        tmp = {
+            'main_sail': None,
+            'head_sail': None,
+            'flying_sail': None
+        }
+
+    else:
+        tmp = json.loads(tmp[0])
+
+    print(tmp)
+
+    return tmp
+
+
+def log_sail_config(conn: sqlite3.Connection, value: dict):
+    c = conn.cursor()
+
+    ts = datetime.now()
+    variable_name = 'sailConfig'
+    value = json.dumps(value)
+
+    sql = """INSERT INTO telemetry
+             (timestamp, pgn, variable_name, value)
+             VALUES (strftime('%Y-%m-%d %H:%M:%f',?), null, ?, ?)"""
+
+    c.execute(sql, (ts, variable_name, value))
+
+    conn.commit()
+
+
+def get_voyage_wardrobe(conn: sqlite3.Connection) -> dict:
+    #TODO this needs to look at a voyage table in app_db
+    #Voyage table should be a subset of a vessel wardrobe. user needs to be able to add/remove these
+
+    sails_onboard = {
+        'main_sails': [None, 'full_main', 'reef_1', 'reef_2', 'reef_3'],
+        'head_sails': [None, 'genoa', 'j_2', 'j_2.5', 'j_3', 'j_4'],
+        'flying_sails': [None, 'a1', 'a2', 'a4', 'fr0']
+    }
+
+    return sails_onboard
