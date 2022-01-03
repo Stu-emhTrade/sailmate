@@ -1,4 +1,5 @@
 ##Big log Data
+*/archive_data/logData/voyages/*
 */prototype_experiments/data_files/*
 *.ndjson
 *.db
