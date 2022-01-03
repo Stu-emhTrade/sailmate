@@ -1,7 +1,3 @@
-from datetime import datetime
-import os
-import json
-import sqlite3
 import argparse
 from .db.setup import setup_log_db, setup_app_db
 from .logger.app import create_app
@@ -25,8 +21,6 @@ def main(test_can_file = None):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--filename', action='store', default=None)
-
     args = parser.parse_args()
     main(test_can_file=args.filename)
-    #todo parse sys args
 
