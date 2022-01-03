@@ -33,7 +33,7 @@ def log_data(
 
     while keep_logging:
         pgns_to_insert = []
-        for i in range(10):
+        for i in range(500):
             # read signal k
             tmp_line = signalk_process.stdout.readline().decode()
             try:
@@ -48,7 +48,7 @@ def log_data(
 
         insert_pgns(log_db_conn, pgns_to_insert)
 
-        time.sleep(5) #todo remove
+        # time.sleep(5) #todo remove
         keep_logging = get_logging_flag(app_db_conn)
 
     # kill subprocesses
