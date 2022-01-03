@@ -1,6 +1,7 @@
 import sys
 import can
 import pytz
+import math
 import argparse
 from datetime import datetime
 from dataclasses import dataclass
@@ -21,14 +22,18 @@ class NmeaMessage:
     dlc: int
     data: bytearray
 
-    def convert_timestamp(self) -> str:
-        ts = self.timestamp
+    def convertTimeStamp(ts):
         nzt = pytz.timezone('Pacific/Auckland')  # TODO this needs attention for other locales.
         ts = datetime.fromtimestamp(ts)
         ts = nzt.localize(ts).astimezone(pytz.utc)
+
+        ts_microseconds = math.floor(ts.microsecond / 1000)
+
+        ts_seconds = float("%06.3f" % (ts.second + (ts_microseconds / 1000)))
+
         return "%s:%06.3f%s" % (
             ts.strftime('%Y-%m-%dT%H:%M'),
-            float("%06.3f" % (ts.second + ts.microsecond / 1e6)),
+            ts_seconds,
             'Z')
 
     def parse_can_id(self) -> {int}:
