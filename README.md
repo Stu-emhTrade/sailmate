@@ -35,7 +35,7 @@ python3 -m pip install -r requirements.txt
 
 We also use a small nodejs program to convert from actisense to signal k. npm should be on the pi already as part of the linux distro, but we need to install the package and set up the script executable.
 
-download dependancies
+download dependancies (which are basically @signalk/signalk-n2k and @canboat/canboatjs)
 ```
 cd stream_converter
 npm install
@@ -45,6 +45,9 @@ install package globally, still in the stream_converter dir
 ```
 sudo npm install -g
 ```
+
+We should be able to run and develop on the flask app now, but for production, we're using [insert x here] as a webserver so we need to do the following steps to install that:
+
 
 ## For development
 
@@ -58,16 +61,4 @@ you may need to run
 ```
 chmod +x scripts/remote_dev_interpreter.sh
 ```
-
-
-
-## Currently we're using the canboat and signal K projects to parse data as it comes in
-
-You'll need this repo https://github.com/SignalK/n2k-signalk.
-
-```
-sudo npm install -g https://github.com/SignalK/n2k-signalk.git
-```
-
-
 
