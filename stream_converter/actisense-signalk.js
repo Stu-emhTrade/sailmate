@@ -33,8 +33,8 @@ var ActisenseParser = new FromPgn();
 
 // tell it what to do when it has some output
 ActisenseParser.on('error', (pgn, error) => {
-  console.error(`Error parsing ${pgn.pgn} ${error}`)
-  console.error(error.stack)
+  //console.error(`Error parsing ${pgn.pgn} ${error}`)
+  //console.error(error.stack)
 })
 
 ActisenseParser.on('warning', (pgn, error) => {
