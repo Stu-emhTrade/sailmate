@@ -1,5 +1,12 @@
-html { font-family: sans-serif; background: #eee; padding: 1rem; }
-body { max-width: 960px; margin: 0 auto; background: white; }
+html { height: 100%; width: 100%; sans-serif; background: #eee; padding: 1rem; }
+body {
+    height:100%;
+    width: 100%;
+    margin: 3px;
+    auto;
+    background: white;
+    font-size: xx-large;
+}
 h1 { font-family: serif; color: #377ba8; margin: 1rem 0; }
 a { color: #377ba8; }
 hr { border: none; border-top: 1px solid lightgray; }
@@ -23,4 +30,32 @@ nav ul li a, nav ul li span, header .action { display: block; padding: 0.5rem; }
 .content input, .content textarea { margin-bottom: 1em; }
 .content textarea { min-height: 12em; resize: vertical; }
 input.danger { color: #cc2f2e; }
-input[type=submit] { align-self: start; min-width: 10em; }
+input[type=submit] {
+    align-self: start;
+    min-width: 10em;
+    font-size: xx-large;
+}
+
+select {font-size: xx-large}
+
+.index_wrapper{
+    height: 100%;
+    display: grid;
+    grid-template-rows: 0.5fr 0.5fr;
+}
+.logger_status_wrapper{
+    height: 100%;
+    display: grid;
+    grid-template-rows: 0.1fr 0.9fr;
+}
+.form_wrapper{
+    height: 100%;
+}
+.sail_change_form{
+    height: 100%;
+}
+.sail_change_grid{
+    height: 100%;
+    display: grid;
+    grid-template-rows: repeat(4, 0.25fr);
+}

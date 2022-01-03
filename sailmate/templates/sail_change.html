@@ -2,42 +2,53 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='style.css') }}">
     <title>SAIL CHANGE</title>
 </head>
 <body>
-    <div>
-        <form action = "{{ url_for('sail_change') }}" method = "POST">
-            <label for="main_sail">Main Sail</label>
-                <select name="main_sail">
-                    {% for s in sail_wardrobe['main_sails']: %}
-                        {% if s == sail_config['main_sail']: %}
-                            <option id={{s}} name="main_sail" value={{s}} selected>{{s}}</option>
-                        {% else %}
-                            <option id={{s}} name="main_sail" value={{s}}>{{s}}</option>
-                        {% endif %}
-                    {% endfor %}}
-                </select>
-            <label for="head_sail">Head Sail</label>
-                <select name="head_sail">
-                    {% for s in sail_wardrobe['head_sails']: %}
-                        {% if s == sail_config['head_sail']: %}
-                            <option id={{s}} name="head_sail" value={{s}} selected>{{s}}</option>
-                        {% else %}
-                            <option id={{s}} name="head_sail" value={{s}}>{{s}}</option>
-                        {% endif %}
-                    {% endfor %}}
-                </select>
-            <label for="flying_sail">Flying Sail</label>
-                <select name="flying_sail">
-                    {% for s in sail_wardrobe['flying_sails']: %}
-                        {% if s == sail_config['flying_sail']: %}
-                            <option id={{s}} name="flying_sail" value={{s}} selected>{{s}}</option>
-                        {% else %}
-                            <option id={{s}} name="flying_sail" value={{s}}>{{s}}</option>
-                        {% endif %}
-                    {% endfor %}}
-                </select>
-            <p><input type = "submit" value = "RECORD SAIL CHANGE" /></p>
+    <div class="form_wrapper">
+       <form action = "{{ url_for('sail_change') }}" method = "POST" class="sail_change_form" >
+            <div class="sail_change_grid">
+                <div class = "main_selection">
+                    <label for="main_sail">Main Sail</label>
+                    <select name="main_sail">
+                        {% for s in sail_wardrobe['main_sails']: %}
+                            {% if s == sail_config['main_sail']: %}
+                                <option id={{s}} name="main_sail" value={{s}} selected>{{s}}</option>
+                            {% else %}
+                                <option id={{s}} name="main_sail" value={{s}}>{{s}}</option>
+                            {% endif %}
+                        {% endfor %}}
+                    </select>
+                </div>
+                <div class = "head_sail_selection">
+                    <label for="head_sail">Head Sail</label>
+                    <select name="head_sail">
+                        {% for s in sail_wardrobe['head_sails']: %}
+                            {% if s == sail_config['head_sail']: %}
+                                <option id={{s}} name="head_sail" value={{s}} selected>{{s}}</option>
+                            {% else %}
+                                <option id={{s}} name="head_sail" value={{s}}>{{s}}</option>
+                            {% endif %}
+                        {% endfor %}}
+                    </select>
+                </div>
+                <div class = "flying_sail_selection">
+                    <label for="flying_sail">Flying Sail</label>
+                    <select name="flying_sail">
+                        {% for s in sail_wardrobe['flying_sails']: %}
+                            {% if s == sail_config['flying_sail']: %}
+                                <option id={{s}} name="flying_sail" value={{s}} selected>{{s}}</option>
+                            {% else %}
+                                <option id={{s}} name="flying_sail" value={{s}}>{{s}}</option>
+                            {% endif %}
+                        {% endfor %}}
+                    </select>
+                </div>
+                <div class = "sail_change_submit">
+                    <p><input type = "submit" value = "RECORD SAIL CHANGE" /></p>
+                </div>
+            </div>
         </form>
     </div>
 </body>

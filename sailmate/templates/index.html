@@ -2,26 +2,38 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='style.css') }}">
     <title>MAIN PAGE</title>
 </head>
 <body>
-    <div>
-        {% if logging_flag == True: %}
-            <p1> LOGGING </p1>
-            <form action = "{{ url_for('stop_log') }}" method = "GET">
-                <p><input type = "submit" value = "STOP LOGGING" /></p>
+    <div class = "index_wrapper">
+        <div class = "logger_status_wrapper">
+            {% if logging_flag == True: %}
+            <div>
+                <p1> LOGGING </p1>
+            </div>
+            <div>
+                <form action = "{{ url_for('stop_log') }}" method = "GET">
+                    <p><input type = "submit" value = "STOP LOGGING" /></p>
+                </form>
+            </div>
+
+            {% else %}
+            <div>
+                <p1> LOGGING </p1>
+            </div>
+            <div>
+                <form action = "{{ url_for('start_log') }}" method = "GET">
+                    <p><input type = "submit" value = "START LOGGING" /></p>
+                </form>
+            </div>
+            {% endif %}
+        </div>
+        <div class="sail_change_wrapper">
+            <form action = "{{ url_for('sail_change') }}" method = "GET">
+                <p><input type = "submit" value = "SAIL CHANGE" /></p>
             </form>
-        {% else %}
-            <p1> LOGGING PAUSED </p1>
-            <form action = "{{ url_for('start_log') }}" method = "GET">
-                <p><input type = "submit" value = "START LOGGING" /></p>
-            </form>
-        {% endif %}
-    </div>
-    <div>
-        <form action = "{{ url_for('sail_change') }}" method = "GET">
-            <p><input type = "submit" value = "SAIL CHANGE" /></p>
-        </form>
+        </div>
     </div>
 </body>
 </html>
