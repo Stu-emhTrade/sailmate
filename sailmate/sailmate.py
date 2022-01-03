@@ -1,6 +1,6 @@
 import argparse
 from .db.setup import setup_log_db, setup_app_db
-from .logger.app import create_app
+from sailmate.app import create_app
 
 LOG_DATA_PATH = './sailmate/data/logData/'
 APP_DB_FILE = './sailmate/data/app_data.db'
