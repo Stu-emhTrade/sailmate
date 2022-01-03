@@ -5,6 +5,7 @@ import os
 from ..logger.pgn import pgn_handler
 from ..logger.pgn_model import pgn_model
 from ..db.functions import get_logging_flag, insert_pgns
+import time
 
 
 def log_data(
@@ -32,16 +33,14 @@ def log_data(
 
     while keep_logging:
         pgns_to_insert = []
-        for i in range(100):
+        for i in range(500):
             # read signal k
             tmp_line = signalk_process.stdout.readline().decode()
             try:
                 tmp_line = json.loads(tmp_line)
                 pgns = pgn_handler(tmp_line, pgn_model)  # this is a list, could be length 0
-                print(i) #todo remove
                 for p in pgns:
                     pgns_to_insert.append(p)
-                    print(p) # todo remove
             except json.decoder.JSONDecodeError as e:
                 print(i)
                 print(e)
@@ -49,6 +48,7 @@ def log_data(
 
         insert_pgns(log_db_conn, pgns_to_insert)
 
+        # time.sleep(3) #todo remove
         keep_logging = get_logging_flag(app_db_conn)
 
     # kill subprocesses
@@ -58,6 +58,7 @@ def log_data(
 
 if __name__ == '__main__':
     print(os.getcwd())
-    log_data(app_db_conn=sqlite3.Connection('./sailmate/data/app_data.db'),
+    log_data(app_db_conn=sqlite3.Connection('./sailmate/data/logData/test/app_data.db'),
              log_db_conn=sqlite3.Connection('./sailmate/data/logData/test/test_log.db'),
-             filename='./sailmate/data/logData/test/actisenseTest.csv')
+             filename='./sailmate/data/logData/test/20210709_actisense.csv')
+
