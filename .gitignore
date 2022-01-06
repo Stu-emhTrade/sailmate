@@ -3,6 +3,7 @@
 */prototype_experiments/data_files/*
 *.ndjson
 *.db
+*.log
 
 ##Node
 *node_modules/

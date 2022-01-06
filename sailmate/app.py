@@ -1,14 +1,13 @@
 import sqlite3
+import logging
 from flask import Flask, render_template, request, redirect, url_for
 import threading
-import time
 from sailmate.db.functions import set_logging_flag, get_logging_flag, get_current_sail_config, log_sail_config, \
     get_voyage_wardrobe
 
 from sailmate.io.log_data import log_data
-import json
-import os
 
+logger = logging.getLogger(__name__)
 
 def create_app(
         app_db: str,
@@ -21,7 +20,6 @@ def create_app(
     @app.route("/")
     def index():
         logging_flag = get_logging_flag(app_db_conn)
-
         return render_template('index.html', logging_flag=logging_flag)
 
     @app.route("/start_log")
@@ -40,6 +38,8 @@ def create_app(
                                           args=[app_db_conn,
                                                 log_db_conn],
                                           kwargs={'filename': test_can_file})
+
+        logger.info('starting data logging thread')
         log_thread.start()
 
         return redirect(url_for('index'))
@@ -47,6 +47,7 @@ def create_app(
     @app.route("/stop_log")
     def stop_log():
         set_logging_flag(app_db_conn, False)
+        logger.info('logger flag set to false')
         return redirect(url_for('index'))
 
     @app.route("/sail_change", methods=['POST', 'GET'])
@@ -69,6 +70,7 @@ def create_app(
                 'flying_sail': request.form.get('flying_sail')
             }
 
+            logger.info('logging sail change')
             log_sail_config(sail_change_db_conn, sail_config)
 
             return redirect(url_for('index'))
