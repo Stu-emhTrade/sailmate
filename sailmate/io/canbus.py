@@ -22,7 +22,8 @@ class NmeaMessage:
     dlc: int
     data: bytearray
 
-    def convertTimeStamp(ts):
+    def convert_timestamp(self):
+        ts = self.timestamp
         nzt = pytz.timezone('Pacific/Auckland')  # TODO this needs attention for other locales.
         ts = datetime.fromtimestamp(ts)
         ts = nzt.localize(ts).astimezone(pytz.utc)
