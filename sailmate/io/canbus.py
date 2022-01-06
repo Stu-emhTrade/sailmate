@@ -84,7 +84,7 @@ def read_canbus(filename=None):
                                        tmp_msg.arbitration_id,
                                        tmp_msg.dlc,
                                        tmp_msg.data)
-                sys.stdout.write(nmea_msg.convert_to_actisense())
+                sys.stdout.writelines(nmea_msg.convert_to_actisense())
 
     else:
         with open(filename) as test_file:
