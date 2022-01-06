@@ -22,7 +22,8 @@ class NmeaMessage:
     dlc: int
     data: bytearray
 
-    def convertTimeStamp(ts):
+    def convert_timestamp(self):
+        ts = self.timestamp
         nzt = pytz.timezone('Pacific/Auckland')  # TODO this needs attention for other locales.
         ts = datetime.fromtimestamp(ts)
         ts = nzt.localize(ts).astimezone(pytz.utc)
@@ -83,12 +84,12 @@ def read_canbus(filename=None):
                                        tmp_msg.arbitration_id,
                                        tmp_msg.dlc,
                                        tmp_msg.data)
-                sys.stdout.write(nmea_msg.convert_to_actisense())
+                print(nmea_msg.convert_to_actisense())
 
     else:
         with open(filename) as test_file:
             for line in test_file:
-                sys.stdout.write(line)
+                print(line)
 
 
 if __name__ == "__main__":

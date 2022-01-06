@@ -1,8 +1,8 @@
 import sqlite3
 import json
 from ..logger.pgn import PgnRecord
+from ..io.time_conversion import convert_to_utc
 from datetime import datetime
-
 
 
 def set_logging_flag(conn: sqlite3.Connection, value: [int, bool]) -> bool:
@@ -43,7 +43,6 @@ def insert_pgns(conn: sqlite3.Connection, pgn_records: [PgnRecord]):
                  (timestamp, pgn, variable_name, value)
                  VALUES (?, ?, ?, ?)"""
         c.executemany(sql, telemetry_tuples)
-        print(telemetry_records)
 
     conn.commit()
 
@@ -79,7 +78,8 @@ def get_current_sail_config(conn: sqlite3.Connection) -> dict:
 def log_sail_config(conn: sqlite3.Connection, value: dict):
     c = conn.cursor()
 
-    ts = datetime.now()
+    ts = convert_to_utc(datetime.now())
+
     variable_name = 'sailConfig'
     value = json.dumps(value)
 
