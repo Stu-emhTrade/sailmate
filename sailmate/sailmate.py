@@ -15,8 +15,8 @@ log_handler = RotatingFileHandler(APPLICATION_LOG_FILE,
                                   mode='a',
                                   maxBytes=10 * 1024 * 1024,
                                   backupCount=2,
-                                  encoding=None,
-                                  delay=0)
+                                  encoding=None)
+
 log_handler.setFormatter(log_formatter)
 log_handler.setLevel(logging.INFO)
 
