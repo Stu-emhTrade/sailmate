@@ -33,7 +33,7 @@ def log_data(
 
     while keep_logging:
         pgns_to_insert = []
-        for i in range(500):
+        for i in range(100):
             # read signal k
             tmp_line = signalk_process.stdout.readline().decode()
             try:
@@ -50,10 +50,12 @@ def log_data(
 
         # time.sleep(5) #todo remove
         keep_logging = get_logging_flag(app_db_conn)
-
     # kill subprocesses
     canbus_process.kill()
     signalk_process.kill()
+
+    # close connection
+    log_db_conn.close()
 
 
 if __name__ == '__main__':
@@ -61,4 +63,6 @@ if __name__ == '__main__':
     log_data(app_db_conn=sqlite3.Connection('./sailmate/data/logData/test/app_data.db'),
              log_db_conn=sqlite3.Connection('./sailmate/data/logData/test/test_log.db'),
              filename='./sailmate/data/logData/test/20210709_actisense.csv')
+
+
 
