@@ -1,6 +1,6 @@
 import sqlite3
 import json
-from ..logger.pgn import PgnRecord
+from ..pgn.pgn import PgnRecord
 from ..io.time_conversion import convert_to_utc
 from datetime import datetime
 
@@ -69,8 +69,6 @@ def get_current_sail_config(conn: sqlite3.Connection) -> dict:
 
     else:
         tmp = json.loads(tmp[0])
-
-    print(tmp)
 
     return tmp
 
