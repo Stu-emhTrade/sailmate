@@ -11,11 +11,13 @@ APPLICATION_LOG_FILE = './sailmate/app_logs.log'
 
 log_formatter = logging.Formatter('%(asctime)s %(levelname)s %(funcName)s(%(lineno)d) %(message)s')
 
-log_handler = RotatingFileHandler(APPLICATION_LOG_FILE,
-                                  mode='a',
-                                  maxBytes=10 * 1024 * 1024,
-                                  backupCount=2,
-                                  encoding=None)
+# log_handler = RotatingFileHandler(APPLICATION_LOG_FILE,
+#                                   mode='a',
+#                                   maxBytes=10 * 1024 * 1024,
+#                                   backupCount=2,
+#                                   encoding=None)
+
+log_handler = logging.StreamHandler()
 
 log_handler.setFormatter(log_formatter)
 log_handler.setLevel(logging.INFO)
@@ -30,11 +32,11 @@ def main(test_can_file=None):
     if not setup_app_db(APP_DB_FILE):
         raise ValueError("app db not setup")
 
-    # initialise an sqllite file for data
-    log_db_path = setup_log_db(LOG_DATA_PATH)
+    # # initialise an sqllite file for data
+    # log_db_path = setup_log_db(LOG_DATA_PATH)
     app_log.info('app db setup')
     # run flask app
-    app = create_app(APP_DB_FILE, log_db_path, test_can_file)
+    app = create_app(APP_DB_FILE, LOG_DATA_PATH, test_can_file)
     app_log.info('running flask')
     app.run(host="0.0.0.0", port=5000)
 
