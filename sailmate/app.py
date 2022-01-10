@@ -12,6 +12,7 @@ from sailmate.db.functions import (
     get_voyage_wardrobe,
     insert_voyage,
     insert_voyage_end,
+    get_current_voyage_id,
     insert_log_filename,
     get_log_db_conn
     )
@@ -31,7 +32,7 @@ def create_app(
 
     app_db_conn = sqlite3.Connection(app_db, check_same_thread=False)
 
-    @app.route("/<int:voyage_id>")
+    @app.route("/")
     def index(voyage_id: [int, None] = None):
         if not voyage_id:
             voyage_id = get_current_voyage_id(app_db_conn)
@@ -40,13 +41,17 @@ def create_app(
         logging_flag = get_logging_flag(app_db_conn)
         return render_template('index.html', logging_flag=logging_flag)
 
-    @app.route("/voyage/start", methods=['PUT'])
+    @app.route("/voyage/start", methods=['POST'])
     def create_voyage():
-        record = {'name': request.form.get('name'),
+        record = {'voyage_name': request.form.get('voyage_name'),
                   'start_datetime': time_conversion.convert_to_utc(datetime.now()),
                   'end_datetime': None,
                   'log_filename': None,
-                  'sail_wardrobe TEXT,'
+                  'sail_wardrobe': json.dumps({ #todo
+                          'main_sails': [None, 'full_main', 'reef_1', 'reef_2', 'reef_3'],
+                          'head_sails': [None, 'genoa', 'j_2', 'j_2.5', 'j_3', 'j_4'],
+                          'flying_sails': [None, 'a1', 'a2', 'a4', 'fr0']
+                          }),
                   'voyage_type': request.form.get('voyage_type'),
                   'pob': request.form.get('pob'),
                   'uploaded_datetime': None}
@@ -67,7 +72,7 @@ def create_app(
             logger.error(f'log_db not created for voyage {voyage_id}')
             raise ValueError(f'log_db not created for voyage {voyage_id}')
 
-    @app.route("/voyage/end", methods=['POST'])  #unsure on whether v_id should be an endpoint param rather than from
+    @app.route("/voyage/end", methods=['POST'])  # unsure on whether v_id should be an endpoint param rather than from
     # or request field. Aim for consistency with sail wardrobe & logger
     def end_voyage():
         set_logging_flag(app_db_conn, value=False)  # refactor to use log/stop endpoint
@@ -81,8 +86,7 @@ def create_app(
 
         return redirect(url_for('index', voyage_id=None))
 
-    #todo /voyage/edit eg to fix an iput error (wardrobe, type, name etc)
-
+    # todo /voyage/edit eg to fix an iput error (wardrobe, type, name etc)
 
     @app.route("/start_log", methods=['POST'])
     def start_log():
@@ -120,7 +124,8 @@ def create_app(
     @app.route("/sail_change", methods=['POST', 'GET'])
     def sail_change():
 
-        sail_change_db_conn = sqlite3.Connection(log_db)
+        voyage_id = request.form.get('voyage_id')
+        sail_change_db_conn = get_log_db_conn(log_db_path, app_db_conn, voyage_id)
         if request.method == 'GET':
             sail_config = get_current_sail_config(sail_change_db_conn)
 
@@ -129,7 +134,8 @@ def create_app(
 
             return render_template('sail_change.html',
                                    sail_config=sail_config,
-                                   sail_wardrobe=wardrobe)
+                                   sail_wardrobe=wardrobe,
+                                   voyage_id=voyage_id)
 
         else:
             sail_config = {
@@ -141,6 +147,6 @@ def create_app(
             logger.info('logging sail change')
             log_sail_config(sail_change_db_conn, sail_config)
 
-            return redirect(url_for('index'))
+            return redirect(url_for('index', voyage_id=voyage_id))
 
     return app

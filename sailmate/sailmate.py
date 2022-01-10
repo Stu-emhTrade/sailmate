@@ -38,7 +38,7 @@ def main(test_can_file=None):
     # run flask app
     app = create_app(APP_DB_FILE, LOG_DATA_PATH, test_can_file)
     app_log.info('running flask')
-    app.run(host="0.0.0.0", port=5000)
+    app.run(host="0.0.0.0", port=5000, debug=True)
 
 
 if __name__ == "__main__":

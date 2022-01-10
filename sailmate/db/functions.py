@@ -38,20 +38,41 @@ def get_logging_flag(conn: sqlite3.Connection) -> bool:
 
 def insert_voyage(conn: sqlite3.Connection, record: dict) -> int:
     c = conn.cursor()
-    voyage_id = c.fetchone("""INSERT INTO voyage (name, 
+    c.execute("""INSERT INTO voyage (name, 
                         start_datetime, 
                         sail_wardrobe, 
                         voyage_type,
                         pob)
-                        VALUES (:name, :start_datetime, :sail_wardrobe, :pob)
+                        VALUES (:voyage_name, :start_datetime, :sail_wardrobe, :voyage_type, :pob)
                         RETURNING voyage_id""",
                            record)
+
+    voyage_id = c.fetchone()[0]
+
     conn.commit()
 
-    logger.info(f'inserted voyage. id: {voyage_id}')
+    logger.info(f'inserted voyage_id: {voyage_id}')
     # todo check that there's now only one voyage with no end_date warning if not
 
     return voyage_id
+
+
+def get_current_voyage_id(conn: sqlite3.Connection) -> int:
+    c = conn.cursor()
+    c.execute("""SELECT voyage_id, start_datetime
+                FROM voyage 
+                WHERE end_datetime is null
+                ORDER BY start_datetime desc""")
+
+    open_voyages = c.fetchall()
+
+    if len(open_voyages) > 1:
+        logger.warning(f'multiple voyages open: {open_voyages}')
+
+    if len(open_voyages) == 0:
+        return None
+    else:
+        return open_voyages[0][0]
 
 
 def insert_voyage_end(conn: sqlite3.Connection, voyage_id: int):
@@ -71,7 +92,7 @@ def insert_log_filename(conn: sqlite3.Connection,
                         voyage_id: int,
                         filename: str):
     c = conn.cursor()
-
+    print(f'vi: {voyage_id} fn: {filename}')
     c.execute("""UPDATE voyage
                  SET log_filename = :fn
                  WHERE voyage_id = :vi""",
