@@ -1,8 +1,11 @@
 import sqlite3
 import json
+import logging
 from ..pgn.pgn import PgnRecord
 from ..io.time_conversion import convert_to_utc
 from datetime import datetime
+
+logger = logging.getLogger(__name__)
 
 
 def set_logging_flag(conn: sqlite3.Connection, value: [int, bool]) -> bool:
@@ -42,12 +45,53 @@ def insert_voyage(conn: sqlite3.Connection, record: dict) -> int:
                         pob)
                         VALUES (:name, :start_datetime, :sail_wardrobe, :pob)
                         RETURNING voyage_id""",
-                          record)
+                           record)
     conn.commit()
 
-    # todo check that there's now only one voyage with no end_date
+    logger.info(f'inserted voyage. id: {voyage_id}')
+    # todo check that there's now only one voyage with no end_date warning if not
 
     return voyage_id
+
+
+def insert_voyage_end(conn: sqlite3.Connection, voyage_id: int):
+    c = conn.cursor()
+    c.execute("""UPDATE voyage
+                SET end_datetime = :end_dt
+                WHERE voyage_id = :vi""",
+              dict(end_dt=convert_to_utc(datetime.now()),
+                   vi=voyage_id
+                   )
+              )
+
+    conn.commit()
+
+
+def insert_log_filename(conn: sqlite3.Connection,
+                        voyage_id: int,
+                        filename: str):
+    c = conn.cursor()
+
+    c.execute("""UPDATE voyage
+                 SET log_filename = :fn
+                 WHERE voyage_id = :vi""",
+              {"fn": filename,
+               "vi": voyage_id}
+              )
+
+    conn.commit()
+
+
+def get_log_filename(conn: sqlite3.Connection,
+                     voyage_id: int) -> str:
+    c = conn.cursor()
+
+    filename = c.fetchone("""SELECT log_filename
+                FROM voyage 
+                WHERE voyage_id = :vi""",
+                          {"vi": voyage_id})
+
+    return filename
 
 
 def insert_pgns(conn: sqlite3.Connection, pgn_records: [PgnRecord]):
@@ -119,3 +163,14 @@ def get_voyage_wardrobe(conn: sqlite3.Connection) -> dict:
             }
 
     return sails_onboard
+
+
+def get_log_db_conn(log_db_path: str,
+                    app_db_conn: sqlite3.Connection,
+                    voyage_id: int
+                    ) -> sqlite3.Connection:
+    log_db_filename = get_log_filename(app_db_conn, voyage_id)
+    db_file = log_db_path + log_db_filename
+    db_conn = sqlite3.Connection(db_file, check_same_thread=False)
+
+    return db_conn

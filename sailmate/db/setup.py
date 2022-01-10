@@ -1,29 +1,33 @@
 import os
+import logging
 from datetime import datetime
 import sqlite3
+from sailmate.db.functions import (
+    get_log_filename
+    )
 
+logger = logging.getLogger(__name__)
 
 # todo take voyage start date as date arg rather than now
-def get_db_filename(
-        log_data_path: str,
-        voyage_start: datetime) -> str:
+# def get_db_filename(
+#         log_data_path: str,
+#         voyage_start: datetime) -> str:
+#
+#     voyage_date = voyage_start.strftime('%Y%m%d')
+#     files = os.listdir(log_data_path)
+#     matching_files = [i for i, f in enumerate(files) if f.split('_')[0] == voyage_date]
+#     if len(matching_files) > 0:
+#         new_incr = 1 + max([int(files[i].split('_')[1].split('.')[0]) for i in matching_files])
+#         filename = voyage_date + '_' + str(new_incr) + '.db'
+#     else:
+#         filename = voyage_date + '_0.db'
+#
+#     return filename
 
-    voyage_date = voyage_start.strftime('%Y%m%d')
-    files = os.listdir(log_data_path)
-    matching_files = [i for i, f in enumerate(files) if f.split('_')[0] == voyage_date]
-    if len(matching_files) > 0:
-        new_incr = 1 + max([int(files[i].split('_')[1].split('.')[0]) for i in matching_files])
-        filename = voyage_date + '_' + str(new_incr) + '.db'
-    else:
-        filename = voyage_date + '_0.db'
 
-    return filename
+def setup_log_db(file: str) -> str:
 
-
-def setup_log_db(log_data_path: str) -> str:
-    filename = get_db_filename(log_data_path)
-    conn = sqlite3.connect(log_data_path + filename)
-    # TODO: some stuff here to initialise the data tables
+    conn = sqlite3.connect(file)
     c = conn.cursor()
 
     create_script = ('CREATE TABLE IF NOT EXISTS telemetry '
@@ -42,8 +46,7 @@ def setup_log_db(log_data_path: str) -> str:
     c.executescript(create_script)
 
     conn.commit()
-    # todo put this file in the app db? could include date, filename, uploaded
-    return log_data_path + filename
+    return True
 
 
 def setup_app_db(app_db_filename: str) -> bool:
