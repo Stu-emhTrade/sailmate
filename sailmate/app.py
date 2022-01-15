@@ -39,7 +39,7 @@ def create_app(
             if not voyage_id:
                 return render_template('voyage_form.html')
         logging_flag = get_logging_flag(app_db_conn)
-        return render_template('index.html', logging_flag=logging_flag)
+        return render_template('index.html', voyage_id=voyage_id, logging_flag=logging_flag)
 
     @app.route("/voyage/start", methods=['POST'])
     def create_voyage():
@@ -91,7 +91,6 @@ def create_app(
     @app.route("/start_log", methods=['POST'])
     def start_log():
         voyage_id = request.form.get('voyage_id', type=int)
-
         log_db_conn = get_log_db_conn(log_db_path,
                                       app_db_conn,
                                       voyage_id)
@@ -121,10 +120,10 @@ def create_app(
         logger.info('logger flag set to false')
         return redirect(url_for('index', voyage_id=voyage_id))
 
-    @app.route("/sail_change", methods=['POST', 'GET'])
-    def sail_change():
+    @app.route("/sail_change/<int:voyage_id>", methods=['POST', 'GET'])
+    def sail_change(voyage_id):
 
-        voyage_id = request.form.get('voyage_id')
+        print(f'voyage_id: {voyage_id}')
         sail_change_db_conn = get_log_db_conn(log_db_path, app_db_conn, voyage_id)
         if request.method == 'GET':
             sail_config = get_current_sail_config(sail_change_db_conn)

@@ -40,7 +40,7 @@ select {font-size: xx-large}
 .index_wrapper{
     height: 100%;
     display: grid;
-    grid-template-rows: 0.5fr 0.5fr;
+    grid-template-rows: 0.1fr 0.4fr 0.4fr;
 }
 .logger_status_wrapper{
     height: 100%;

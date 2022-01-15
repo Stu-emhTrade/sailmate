@@ -7,6 +7,7 @@
 </head>
 <body>
     <div class = "index_wrapper">
+        <p1> TODO [voyage_name] {{voyage_id}} </p1>
         <div class = "logger_status_wrapper">
             {% if logging_flag == True: %}
             <div>
@@ -14,6 +15,7 @@
             </div>
             <div>
                 <form action = "{{ url_for('stop_log') }}" method = "GET">
+                    <input type="hidden" name="voyage_id" value={{voyage_id}} />
                     <p><input type = "submit" value = "STOP LOGGING" /></p>
                 </form>
             </div>
@@ -23,14 +25,15 @@
                 <p1> LOGGING PAUSED </p1>
             </div>
             <div>
-                <form action = "{{ url_for('start_log') }}" method = "GET">
+                <form action = "{{ url_for('start_log') }}" method = "POST">
+                    <input type="hidden" name="voyage_id" value={{voyage_id}} />
                     <p><input type = "submit" value = "START LOGGING" /></p>
                 </form>
             </div>
             {% endif %}
         </div>
         <div class="sail_change_wrapper">
-            <form action = "{{ url_for('sail_change') }}" method = "GET">
+            <form action = "{{ url_for('sail_change', voyage_id=voyage_id) }}"  method = "GET">
                 <p><input type = "submit" value = "SAIL CHANGE" /></p>
             </form>
         </div>

@@ -45,7 +45,7 @@ def insert_voyage(conn: sqlite3.Connection, record: dict) -> int:
                         pob)
                         VALUES (:voyage_name, :start_datetime, :sail_wardrobe, :voyage_type, :pob)
                         RETURNING voyage_id""",
-                           record)
+              record)
 
     voyage_id = c.fetchone()[0]
 
@@ -107,10 +107,12 @@ def get_log_filename(conn: sqlite3.Connection,
                      voyage_id: int) -> str:
     c = conn.cursor()
 
-    filename = c.fetchone("""SELECT log_filename
-                FROM voyage 
-                WHERE voyage_id = :vi""",
-                          {"vi": voyage_id})
+    c.execute("""SELECT log_filename
+                 FROM voyage 
+                 WHERE voyage_id = :vi""",
+              {"vi": voyage_id})
+
+    filename = c.fetchone()[0]
 
     return filename
 
@@ -190,8 +192,10 @@ def get_log_db_conn(log_db_path: str,
                     app_db_conn: sqlite3.Connection,
                     voyage_id: int
                     ) -> sqlite3.Connection:
+
     log_db_filename = get_log_filename(app_db_conn, voyage_id)
     db_file = log_db_path + log_db_filename
+    logger.info(f'retrieved db filename: {db_file}')
     db_conn = sqlite3.Connection(db_file, check_same_thread=False)
 
     return db_conn
