@@ -37,6 +37,12 @@
                 <p><input type = "submit" value = "SAIL CHANGE" /></p>
             </form>
         </div>
+        <div class="end_voyage_wrapper">
+            <form action = "{{ url_for('end_voyage') }}"  method = "POST" onsubmit="return confirm('End Voyage?');">
+                <input type="hidden" name="voyage_id" value={{voyage_id}}
+                <p><input type = "submit" value = "END VOYAGE" /></p>
+            </form>
+        </div>
     </div>
 </body>
 </html>

@@ -75,7 +75,7 @@ def create_app(
     @app.route("/voyage/end", methods=['POST'])  # unsure on whether v_id should be an endpoint param rather than from
     # or request field. Aim for consistency with sail wardrobe & logger
     def end_voyage():
-        set_logging_flag(app_db_conn, value=False)  # refactor to use log/stop endpoint
+        set_logging_flag(app_db_conn, value=False)  # todo refactor to use log/stop endpoint
 
         voyage_id = request.form.get('voyage_id', type=int)
         if not voyage_id:
