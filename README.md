@@ -9,6 +9,19 @@ then follow the instructions on https://github.com/Stu-emhTrade/sailmate/wiki/Se
 when plugged into a power supply, the pi should now have an access point, currently called
 `PiWiFi`
 
+### sqlite version
+The project requires sqlite version >= 3.37
+
+```
+python3
+
+>>> import sqlite3
+>>> sqlite3.sqlite_version
+
+```
+If it needs updating, try apt, but otherwise, try the instructions here to download the tarball. https://stackoverflow.com/questions/64861331/how-can-i-install-or-upgrade-to-sqlite-3-33-0-on-ubuntu-18-04. Get the latest version here: https://www.sqlite.org/download.html
+
+
 ## CANBUS
 
 Follow instructions here to get the pi on the NMEA 2000 network:
