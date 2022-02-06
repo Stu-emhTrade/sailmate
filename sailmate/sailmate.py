@@ -31,10 +31,8 @@ def main(test_can_file=None):
     # setup app db
     if not setup_app_db(APP_DB_FILE):
         raise ValueError("app db not setup")
-
-    # # initialise an sqllite file for data
-    # log_db_path = setup_log_db(LOG_DATA_PATH)
     app_log.info('app db setup')
+    
     # run flask app
     app = create_app(APP_DB_FILE, LOG_DATA_PATH, test_can_file)
     app_log.info('running flask')
