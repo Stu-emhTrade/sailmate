@@ -1,0 +1,31 @@
+<!DOCTYPE html> <!--- TODO should include the boat wardrobe and max pob as arguments to this template--->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='style.css') }}">
+    <title>CREATE VOYAGE</title>
+</head>
+<body>
+    <div class = "form_wrapper">
+        <form action = "{{ url_for('create_voyage') }}" method = "POST">
+            <p>
+                <label for="voyage_name">Voyage Name</label>
+                <input type="text" name="voyage_name" id="voyage_name" value="" />
+            </p>
+            <p>
+                <label for="voyage_type">Voyage Type:</label>
+                <select name="voyage_type" id="voyage_type">
+                    <option value="RACE">Race</option>
+                    <option value="TRAIN">Training</option>
+                    <option value="CRUISE">Cruising</option>
+                </select>
+            </p>
+            <p>
+                <label for="pob">People Onboard</label>
+                <input type="number" name="pob" id="pob" min="1" max="10" value="1" />
+            </p>
+            <p><input type = "submit" value = "CREATE" /></p>
+        </form>
+    </div>
+</body>
+</html>

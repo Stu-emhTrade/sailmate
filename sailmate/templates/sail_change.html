@@ -7,7 +7,7 @@
 </head>
 <body>
     <div class="form_wrapper">
-       <form action = "{{ url_for('sail_change') }}" method = "POST" class="sail_change_form" >
+       <form action = "{{ url_for('sail_change', voyage_id=voyage_id) }}" method = "POST" class="sail_change_form" >
             <div class="sail_change_grid">
                 <div class = "main_selection">
                     <label for="main_sail">Main Sail</label>
