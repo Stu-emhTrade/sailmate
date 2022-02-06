@@ -1,6 +1,7 @@
 import sqlite3
 import json
 import logging
+import uuid
 from ..pgn.pgn import PgnRecord
 from ..io.time_conversion import convert_to_utc
 from datetime import datetime
@@ -36,7 +37,7 @@ def get_logging_flag(conn: sqlite3.Connection) -> bool:
     return bool(tmp[0][0])
 
 
-def get_current_voyage_id(conn: sqlite3.Connection) -> int:
+def get_current_voyage_id(conn: sqlite3.Connection) -> str:
     c = conn.cursor()
     c.execute("""SELECT voyage_id, start_datetime
                 FROM voyage 
@@ -54,15 +55,23 @@ def get_current_voyage_id(conn: sqlite3.Connection) -> int:
         return open_voyages[0][0]
 
 
-def insert_voyage(conn: sqlite3.Connection, record: dict) -> int:
+def insert_voyage(conn: sqlite3.Connection, record: dict) -> str:
+    record['voyage_id'] = str(uuid.uuid4())
+    print(record)
     c = conn.cursor()
-    c.execute("""INSERT INTO voyage (name, 
+    c.execute("""INSERT INTO voyage (
+                        voyage_id,
+                        name, 
                         start_datetime, 
                         sail_wardrobe, 
                         voyage_type,
                         pob)
-                        VALUES (:voyage_name, :start_datetime, :sail_wardrobe, :voyage_type, :pob)
-                        """,
+                        VALUES (:voyage_id, 
+                                :voyage_name, 
+                                :start_datetime, 
+                                :sail_wardrobe, 
+                                :voyage_type, 
+                                :pob)""",
               record)
 
     conn.commit()
@@ -73,21 +82,20 @@ def insert_voyage(conn: sqlite3.Connection, record: dict) -> int:
     return voyage_id
 
 
-def insert_voyage_end(conn: sqlite3.Connection, voyage_id: int):
+def insert_voyage_end(conn: sqlite3.Connection, voyage_id: str):
     c = conn.cursor()
     c.execute("""UPDATE voyage
                 SET end_datetime = :end_dt
                 WHERE voyage_id = :vi""",
-              dict(end_dt=convert_to_utc(datetime.now()),
-                   vi=voyage_id
-                   )
+              {"end_dt": convert_to_utc(datetime.now()),
+               "vi": voyage_id}
               )
 
     conn.commit()
 
 
 def insert_log_filename(conn: sqlite3.Connection,
-                        voyage_id: int,
+                        voyage_id: str,
                         filename: str):
     c = conn.cursor()
     print(f'vi: {voyage_id} fn: {filename}')
@@ -102,7 +110,7 @@ def insert_log_filename(conn: sqlite3.Connection,
 
 
 def get_log_filename(conn: sqlite3.Connection,
-                     voyage_id: int) -> str:
+                     voyage_id: str) -> str:
     c = conn.cursor()
 
     c.execute("""SELECT log_filename
@@ -188,9 +196,8 @@ def get_voyage_wardrobe(conn: sqlite3.Connection) -> dict:
 
 def get_log_db_conn(log_db_path: str,
                     app_db_conn: sqlite3.Connection,
-                    voyage_id: int
+                    voyage_id: str
                     ) -> sqlite3.Connection:
-
     log_db_filename = get_log_filename(app_db_conn, voyage_id)
     db_file = log_db_path + log_db_filename
     logger.info(f'retrieved db filename: {db_file}')

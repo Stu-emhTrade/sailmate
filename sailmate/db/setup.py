@@ -58,7 +58,7 @@ def setup_app_db(app_db_filename: str) -> bool:
                     'run_log INTEGER);'
 
                     'CREATE TABLE IF NOT EXISTS voyage '
-                    '(voyage_id INTEGER PRIMARY KEY AUTOINCREMENT,'
+                    '(voyage_id TEXT PRIMARY KEY,'
                     'name TEXT,'
                     'log_filename TEXT,'
                     'start_datetime TEXT,'

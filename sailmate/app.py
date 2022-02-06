@@ -33,7 +33,7 @@ def create_app(
     app_db_conn = sqlite3.Connection(app_db, check_same_thread=False)
 
     @app.route("/")
-    def index(voyage_id: [int, None] = None):
+    def index(voyage_id: [str, None] = None):
         if not voyage_id:
             voyage_id = get_current_voyage_id(app_db_conn)
             if not voyage_id:
@@ -60,7 +60,7 @@ def create_app(
         voyage_id = insert_voyage(app_db_conn, record)
 
         # create a logfile name from date and voyage_id insert that
-        log_filename = datetime.now().strftime('%Y%m%d') + '_' + str(voyage_id) + '.db'
+        log_filename = datetime.now().strftime('%Y%m%d') + '_' + voyage_id + '.db'
         insert_log_filename(app_db_conn, voyage_id, log_filename)
 
         # setup the log db with the log_filename
@@ -77,7 +77,7 @@ def create_app(
     def end_voyage():
         set_logging_flag(app_db_conn, value=False)  # todo refactor to use log/stop endpoint
 
-        voyage_id = request.form.get('voyage_id', type=int)
+        voyage_id = request.form.get('voyage_id', type=str)
         if not voyage_id:
             logger.error('no voyage_id supplied to voyage/end')
             raise ValueError('no voyage_id supplied to voyage/end')
@@ -90,7 +90,7 @@ def create_app(
 
     @app.route("/start_log", methods=['POST'])
     def start_log():
-        voyage_id = request.form.get('voyage_id', type=int)
+        voyage_id = request.form.get('voyage_id', type=str)
         log_db_conn = get_log_db_conn(log_db_path,
                                       app_db_conn,
                                       voyage_id)
@@ -115,12 +115,12 @@ def create_app(
 
     @app.route("/stop_log")
     def stop_log():
-        voyage_id = request.form.get('voyage_id', type=int)
+        voyage_id = request.form.get('voyage_id', type=str)
         set_logging_flag(app_db_conn, False)
         logger.info('logger flag set to false')
         return redirect(url_for('index', voyage_id=voyage_id))
 
-    @app.route("/sail_change/<int:voyage_id>", methods=['POST', 'GET'])
+    @app.route("/sail_change/<string:voyage_id>", methods=['POST', 'GET'])
     def sail_change(voyage_id):
 
         print(f'voyage_id: {voyage_id}')
