@@ -36,27 +36,6 @@ def get_logging_flag(conn: sqlite3.Connection) -> bool:
     return bool(tmp[0][0])
 
 
-def insert_voyage(conn: sqlite3.Connection, record: dict) -> int:
-    c = conn.cursor()
-    c.execute("""INSERT INTO voyage (name, 
-                        start_datetime, 
-                        sail_wardrobe, 
-                        voyage_type,
-                        pob)
-                        VALUES (:voyage_name, :start_datetime, :sail_wardrobe, :voyage_type, :pob)
-                        RETURNING voyage_id""",
-              record)
-
-    voyage_id = c.fetchone()[0]
-
-    conn.commit()
-
-    logger.info(f'inserted voyage_id: {voyage_id}')
-    # todo check that there's now only one voyage with no end_date warning if not
-
-    return voyage_id
-
-
 def get_current_voyage_id(conn: sqlite3.Connection) -> int:
     c = conn.cursor()
     c.execute("""SELECT voyage_id, start_datetime
@@ -73,6 +52,25 @@ def get_current_voyage_id(conn: sqlite3.Connection) -> int:
         return None
     else:
         return open_voyages[0][0]
+
+
+def insert_voyage(conn: sqlite3.Connection, record: dict) -> int:
+    c = conn.cursor()
+    c.execute("""INSERT INTO voyage (name, 
+                        start_datetime, 
+                        sail_wardrobe, 
+                        voyage_type,
+                        pob)
+                        VALUES (:voyage_name, :start_datetime, :sail_wardrobe, :voyage_type, :pob)
+                        """,
+              record)
+
+    conn.commit()
+
+    voyage_id = get_current_voyage_id(conn)
+    logger.info(f'inserted voyage_id: {voyage_id}')
+
+    return voyage_id
 
 
 def insert_voyage_end(conn: sqlite3.Connection, voyage_id: int):
