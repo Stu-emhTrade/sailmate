@@ -19,7 +19,13 @@ python3
 >>> sqlite3.sqlite_version
 
 ```
-If it needs updating, try apt, but otherwise, try the instructions here to download the tarball. https://stackoverflow.com/questions/64861331/how-can-i-install-or-upgrade-to-sqlite-3-33-0-on-ubuntu-18-04. Get the latest version here: https://www.sqlite.org/download.html
+If it needs updating, try apt, but otherwise, try the instructions here to download the tarball.
+
+https://stackoverflow.com/questions/64861331/how-can-i-install-or-upgrade-to-sqlite-3-33-0-on-ubuntu-18-04.
+https://stackoverflow.com/questions/62523183/how-to-change-sqlite-version-used-by-python
+
+
+Get the latest version here: https://www.sqlite.org/download.html
 
 
 ## CANBUS
