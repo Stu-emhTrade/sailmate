@@ -67,9 +67,9 @@ def log_data(
 
 if __name__ == '__main__':
     print(os.getcwd())
-    log_data(app_db_conn=sqlite3.Connection('./sailmate/data/logData/test/app_data.db'),
+    log_data(app_db_conn=sqlite3.Connection('./sailmate/data/logData/test/test_app_data.db'),
              log_db_conn=sqlite3.Connection('./sailmate/data/logData/test/test_log.db'),
-             filename='./sailmate/data/logData/test/20210709_actisense.csv')
+             filename='./sailmate/data/logData/test/202205_boi_actisense.csv')
 
 
 
