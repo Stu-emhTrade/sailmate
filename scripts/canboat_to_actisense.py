@@ -59,9 +59,17 @@ def main(input_filename, output_filename):
     with open(input_filename) as infile:
         with open(output_filename, 'w') as outfile:
             outfile.truncate(0)
+            line = 1
             for i in infile:
-                line_to_write = convertToActisense(json.loads(infile.readline())) + '\n'
-                outfile.write(line_to_write)
+                try:
+                    line_to_write = convertToActisense(json.loads(i)) + '\n'
+                    outfile.write(line_to_write)
+                except json.decoder.JSONDecodeError as e:
+                    print(f'json error {e} on line {line}')
+
+                if line % 10000 == 0:
+                    print(f'parsed {line} lines')
+                line += 1
 
 
 if __name__ == '__main__':
